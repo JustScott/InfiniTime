@@ -98,7 +98,7 @@ Alarm::Alarm(Controllers::AlarmController& alarmController,
   btnInfo = lv_btn_create(lv_scr_act(), nullptr);
   btnInfo->user_data = this;
   lv_obj_set_event_cb(btnInfo, btnEventHandler);
-  lv_obj_set_size(btnInfo, 50, 50);
+  lv_obj_set_size(btnInfo, 62, 62);
   lv_obj_align(btnInfo, lv_scr_act(), LV_ALIGN_IN_TOP_MID, 0, -4);
   lv_obj_set_style_local_bg_color(btnInfo, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, bgColor);
   lv_obj_set_style_local_border_width(btnInfo, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, 4);
@@ -203,7 +203,7 @@ void Alarm::UpdateAlarmTime() {
 void Alarm::SetAlerting() {
   lv_obj_set_hidden(enableSwitch, true);
   lv_obj_set_hidden(btnStop, false);
-  taskStopAlarm = lv_task_create(StopAlarmTaskCallback, pdMS_TO_TICKS(60 * 1000), LV_TASK_PRIO_MID, this);
+  taskStopAlarm = lv_task_create(StopAlarmTaskCallback, pdMS_TO_TICKS(30 * 1000), LV_TASK_PRIO_MID, this);
   motorController.StartRinging();
   systemTask.PushMessage(System::Messages::DisableSleeping);
 }
@@ -247,23 +247,19 @@ void Alarm::ShowInfo() {
   txtMessage = lv_label_create(btnMessage, nullptr);
   lv_obj_set_style_local_bg_color(btnMessage, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_NAVY);
 
-  if (alarmController.State() == AlarmController::AlarmState::Set) {
-    auto timeToAlarm = alarmController.SecondsToAlarm();
+  auto timeToAlarm = alarmController.SecondsToAlarm();
 
-    auto daysToAlarm = timeToAlarm / 86400;
-    auto hrsToAlarm = (timeToAlarm % 86400) / 3600;
-    auto minToAlarm = (timeToAlarm % 3600) / 60;
-    auto secToAlarm = timeToAlarm % 60;
+  auto daysToAlarm = timeToAlarm / 86400;
+  auto hrsToAlarm = (timeToAlarm % 86400) / 3600;
+  auto minToAlarm = (timeToAlarm % 3600) / 60;
+  auto secToAlarm = timeToAlarm % 60;
 
-    lv_label_set_text_fmt(txtMessage,
-                          "Time to\nalarm:\n%2lu Days\n%2lu Hours\n%2lu Minutes\n%2lu Seconds",
-                          daysToAlarm,
-                          hrsToAlarm,
-                          minToAlarm,
-                          secToAlarm);
-  } else {
-    lv_label_set_text_static(txtMessage, "Alarm\nis not\nset.");
-  }
+  lv_label_set_text_fmt(txtMessage,
+                        "Time to\nalarm:\n%2lu Days\n%2lu Hours\n%2lu Minutes\n%2lu Seconds",
+                        daysToAlarm,
+                        hrsToAlarm,
+                        minToAlarm,
+                        secToAlarm);
 }
 
 void Alarm::HideInfo() {
