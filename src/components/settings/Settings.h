@@ -51,6 +51,11 @@ namespace Pinetime {
         int colorIndex = 0;
       };
 
+      struct HeartRateBackgroundMeasurement {
+        bool activated = false;
+        unsigned int intervalInSeconds = 0;
+      };
+
       Settings(Pinetime::Controllers::FS& fs);
 
       Settings(const Settings&) = delete;
@@ -330,6 +335,30 @@ namespace Pinetime {
         return bleRadioEnabled;
       };
 
+      bool IsHeartRateBackgroundMeasurementActivated() const {
+        return settings.heartRateBackgroundMeasurement.activated;
+      }
+
+      void DeactivateHeartRateBackgroundMeasurement() {
+        if (settings.heartRateBackgroundMeasurement.activated) {
+          settingsChanged = true;
+        }
+        settings.heartRateBackgroundMeasurement.activated = false;
+      }
+
+      unsigned int GetHeartRateBackgroundMeasurementInterval() const {
+        return settings.heartRateBackgroundMeasurement.intervalInSeconds;
+      }
+
+      void SetHeartRateBackgroundMeasurementInterval(unsigned int newIntervalInSeconds) {
+        if (!settings.heartRateBackgroundMeasurement.activated ||
+            newIntervalInSeconds != settings.heartRateBackgroundMeasurement.intervalInSeconds) {
+          settingsChanged = true;
+        }
+        settings.heartRateBackgroundMeasurement.intervalInSeconds = newIntervalInSeconds;
+        settings.heartRateBackgroundMeasurement.activated = true;
+      }
+
     private:
       Pinetime::Controllers::FS& fs;
 
@@ -359,6 +388,8 @@ namespace Pinetime {
         std::bitset<5> sleepOption {0};
 
         Controllers::BrightnessController::Levels brightLevel = Controllers::BrightnessController::Levels::Medium;
+
+        HeartRateBackgroundMeasurement heartRateBackgroundMeasurement;
       };
 
       SettingsData settings;
