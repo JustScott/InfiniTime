@@ -42,19 +42,15 @@ namespace Pinetime {
           {Symbols::sun, "Display", Apps::SettingDisplay},
           {Symbols::crescentMoon, "Sleep", Apps::SettingSleep},
 
+          {Symbols::heartBeat, "Heartrate", Apps::SettingHeartRate},
           {Symbols::clock, "Date & Time", Apps::SettingSetDateTime},
           {Symbols::clock, "Time format", Apps::SettingTimeFormat},
           {Symbols::clock, "Chimes", Apps::SettingChimes},
-          {Symbols::tachometer, "Shake Calib.", Apps::SettingShakeThreshold},
 
+          {Symbols::tachometer, "Shake Calib.", Apps::SettingShakeThreshold},
           {Symbols::check, "Firmware", Apps::FirmwareValidation},
           {Symbols::list, "About", Apps::SysInfo},
-
-          // {Symbols::none, "None", Apps::None},
-          // {Symbols::none, "None", Apps::None},
-          // {Symbols::none, "None", Apps::None},
-          // {Symbols::none, "None", Apps::None},
-
+          {Symbols::none, "None", Apps::None},
         }};
         ScreenList<nScreens> screens;
       };
