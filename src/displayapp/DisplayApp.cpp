@@ -241,10 +241,7 @@ void DisplayApp::Refresh() {
         RestoreBrightness();
         break;
       case Messages::GoToSleep:
-        while (brightnessController.Level() != Controllers::BrightnessController::Levels::Off) {
-          brightnessController.Lower();
-          vTaskDelay(100);
-        }
+        brightnessController.Set(Controllers::BrightnessController::Levels::Off);
         lcd.Sleep();
         PushMessageToSystemTask(Pinetime::System::Messages::OnDisplayTaskSleeping);
         state = States::Idle;
@@ -420,6 +417,8 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
 
   currentScreen.reset(nullptr);
   SetFullRefresh(direction);
+
+  brightnessController.Set(settingsController.GetBrightness());
 
   switch (app) {
     case Apps::Launcher: {
