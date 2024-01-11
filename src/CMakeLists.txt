@@ -366,8 +366,8 @@ list(APPEND SOURCE_FILES
         displayapp/DisplayApp.cpp
         displayapp/screens/Screen.cpp
         displayapp/screens/Tile.cpp
-        displayapp/screens/InfiniPaint.cpp
-        displayapp/screens/Paddle.cpp
+        #displayapp/screens/InfiniPaint.cpp
+        #displayapp/screens/Paddle.cpp
         displayapp/screens/StopWatch.cpp
         displayapp/screens/BatteryIcon.cpp
         displayapp/screens/BleIcon.cpp
@@ -378,7 +378,7 @@ list(APPEND SOURCE_FILES
         displayapp/screens/Music.cpp
         displayapp/screens/Navigation.cpp
         displayapp/screens/Calendar.cpp
-        displayapp/screens/Metronome.cpp
+        #displayapp/screens/Metronome.cpp
         displayapp/screens/Motion.cpp
         displayapp/screens/FirmwareValidation.cpp
         displayapp/screens/ApplicationList.cpp
@@ -420,10 +420,10 @@ list(APPEND SOURCE_FILES
         ## Watch faces
         displayapp/screens/WatchFaceAnalog.cpp
         displayapp/screens/WatchFaceDigital.cpp
-        displayapp/screens/WatchFaceInfineat.cpp
-        displayapp/screens/WatchFaceTerminal.cpp
+        #displayapp/screens/WatchFaceInfineat.cpp
+        #displayapp/screens/WatchFaceTerminal.cpp
         displayapp/screens/WatchFacePineTimeStyle.cpp
-        displayapp/screens/WatchFaceCasioStyleG7710.cpp
+        #displayapp/screens/WatchFaceCasioStyleG7710.cpp
 
         ##
 
@@ -590,9 +590,9 @@ set(INCLUDE_FILES
         displayapp/TouchEvents.h
         displayapp/screens/Screen.h
         displayapp/screens/Tile.h
-        displayapp/screens/InfiniPaint.h
+        #displayapp/screens/InfiniPaint.h
         displayapp/screens/StopWatch.h
-        displayapp/screens/Paddle.h
+        #displayapp/screens/Paddle.h
         displayapp/screens/BatteryIcon.h
         displayapp/screens/BleIcon.h
         displayapp/screens/NotificationIcon.h
@@ -606,7 +606,7 @@ set(INCLUDE_FILES
         displayapp/Apps.h
         displayapp/screens/Notifications.h
         displayapp/screens/HeartRate.h
-        displayapp/screens/Metronome.h
+        #displayapp/screens/Metronome.h
         displayapp/screens/Motion.h
         displayapp/screens/Timer.h
         displayapp/screens/Alarm.h
