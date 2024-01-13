@@ -24,6 +24,7 @@
 #include "displayapp/screens/SystemInfo.h"
 #include "displayapp/screens/Tile.h"
 #include "displayapp/screens/Twos.h"
+#include "displayapp/screens/Bird.h"
 #include "displayapp/screens/FlashLight.h"
 #include "displayapp/screens/BatteryInfo.h"
 #include "displayapp/screens/Steps.h"
