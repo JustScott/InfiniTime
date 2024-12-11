@@ -366,8 +366,6 @@ list(APPEND SOURCE_FILES
         displayapp/DisplayApp.cpp
         displayapp/screens/Screen.cpp
         displayapp/screens/Tile.cpp
-        displayapp/screens/InfiniPaint.cpp
-        displayapp/screens/Paddle.cpp
         displayapp/screens/StopWatch.cpp
         displayapp/screens/BatteryIcon.cpp
         displayapp/screens/BleIcon.cpp
@@ -377,13 +375,10 @@ list(APPEND SOURCE_FILES
         displayapp/screens/FirmwareUpdate.cpp
         displayapp/screens/Music.cpp
         displayapp/screens/Navigation.cpp
-        displayapp/screens/Metronome.cpp
-        displayapp/screens/Motion.cpp
         displayapp/screens/Weather.cpp
         displayapp/screens/FirmwareValidation.cpp
         displayapp/screens/ApplicationList.cpp
         displayapp/screens/Notifications.cpp
-        displayapp/screens/Twos.cpp
         displayapp/screens/HeartRate.cpp
         displayapp/screens/FlashLight.cpp
         displayapp/screens/List.cpp
@@ -391,7 +386,7 @@ list(APPEND SOURCE_FILES
         displayapp/screens/BatteryInfo.cpp
         displayapp/screens/Steps.cpp
         displayapp/screens/Timer.cpp
-        displayapp/screens/Dice.cpp
+        displayapp/screens/Twos.cpp
         displayapp/screens/PassKey.cpp
         displayapp/screens/Error.cpp
         displayapp/screens/Alarm.cpp
@@ -592,9 +587,7 @@ set(INCLUDE_FILES
         displayapp/TouchEvents.h
         displayapp/screens/Screen.h
         displayapp/screens/Tile.h
-        displayapp/screens/InfiniPaint.h
         displayapp/screens/StopWatch.h
-        displayapp/screens/Paddle.h
         displayapp/screens/BatteryIcon.h
         displayapp/screens/BleIcon.h
         displayapp/screens/NotificationIcon.h
@@ -608,10 +601,9 @@ set(INCLUDE_FILES
         displayapp/Apps.h
         displayapp/screens/Notifications.h
         displayapp/screens/HeartRate.h
-        displayapp/screens/Metronome.h
         displayapp/screens/Motion.h
         displayapp/screens/Timer.h
-        displayapp/screens/Dice.h
+        displayapp/screens/Twos.h
         displayapp/screens/Alarm.h
         displayapp/Colors.h
         displayapp/widgets/Counter.h
