@@ -385,6 +385,7 @@ list(APPEND SOURCE_FILES
         displayapp/screens/CheckboxList.cpp
         displayapp/screens/BatteryInfo.cpp
         displayapp/screens/Steps.cpp
+        displayapp/screens/Calculator.cpp
         displayapp/screens/Timer.cpp
         displayapp/screens/Twos.cpp
         displayapp/screens/PassKey.cpp
@@ -602,6 +603,7 @@ set(INCLUDE_FILES
         displayapp/screens/Notifications.h
         displayapp/screens/HeartRate.h
         displayapp/screens/Motion.h
+        displayapp/screens/Calculator.h
         displayapp/screens/Timer.h
         displayapp/screens/Twos.h
         displayapp/screens/Alarm.h

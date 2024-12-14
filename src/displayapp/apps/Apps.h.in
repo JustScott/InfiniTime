@@ -21,6 +21,7 @@ namespace Pinetime {
       HeartRate,
       Navigation,
       StopWatch,
+      Calculator,
       Steps,
       Twos,
       Weather,
