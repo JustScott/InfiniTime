@@ -12,6 +12,7 @@
 #include "displayapp/screens/ApplicationList.h"
 #include "displayapp/screens/FirmwareUpdate.h"
 #include "displayapp/screens/FirmwareValidation.h"
+#include "displayapp/screens/Bird.h"
 #include "displayapp/screens/StopWatch.h"
 #include "displayapp/screens/Music.h"
 #include "displayapp/screens/Navigation.h"
