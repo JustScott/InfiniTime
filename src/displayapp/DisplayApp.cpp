@@ -47,6 +47,7 @@
 #include "displayapp/screens/settings/SettingWakeUp.h"
 #include "displayapp/screens/settings/SettingDisplay.h"
 #include "displayapp/screens/settings/SettingSteps.h"
+#include "displayapp/screens/settings/SettingSleep.h"
 #include "displayapp/screens/settings/SettingSetDateTime.h"
 #include "displayapp/screens/settings/SettingChimes.h"
 #include "displayapp/screens/settings/SettingShakeThreshold.h"
@@ -303,6 +304,7 @@ void DisplayApp::Refresh() {
         if (state != States::Running || !systemTask->IsSleeping()) {
           break;
         }
+
         while (brightnessController.Level() != Controllers::BrightnessController::Levels::Low) {
           brightnessController.Lower();
           vTaskDelay(100);
@@ -313,6 +315,7 @@ void DisplayApp::Refresh() {
         } else {
           brightnessController.Set(Controllers::BrightnessController::Levels::Off);
         }
+
         // Since the active screen is not really an app, go back to Clock.
         if (currentApp == Apps::Launcher || currentApp == Apps::Notifications || currentApp == Apps::QuickSettings ||
             currentApp == Apps::Settings) {
@@ -612,6 +615,9 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
       break;
     case Apps::SettingSteps:
       currentScreen = std::make_unique<Screens::SettingSteps>(settingsController);
+      break;
+    case Apps::SettingSleep:
+      currentScreen = std::make_unique<Screens::SettingSleep>(settingsController);
       break;
     case Apps::SettingSetDateTime:
       currentScreen = std::make_unique<Screens::SettingSetDateTime>(this, dateTimeController, settingsController);
