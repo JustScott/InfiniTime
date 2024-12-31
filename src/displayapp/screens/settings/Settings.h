@@ -41,15 +41,14 @@ namespace Pinetime {
           {Symbols::cloudSunRain, "Weather", Apps::SettingWeatherFormat},
           {Symbols::eye, "Wake Up", Apps::SettingWakeUp},
           {Symbols::sun, "Display", Apps::SettingDisplay},
+          {Symbols::crescentMoon, "Sleep", Apps::SettingSleep},
 
           {Symbols::clock, "Date & Time", Apps::SettingSetDateTime},
           {Symbols::clock, "Time format", Apps::SettingTimeFormat},
-
-
           {Symbols::clock, "Chimes", Apps::SettingChimes},
           {Symbols::tachometer, "Shake Calib.", Apps::SettingShakeThreshold},
-          {Symbols::check, "Firmware", Apps::FirmwareValidation},
 
+          {Symbols::check, "Firmware", Apps::FirmwareValidation},
           {Symbols::list, "About", Apps::SysInfo},
 
           // {Symbols::none, "None", Apps::None},
