@@ -489,7 +489,13 @@ void DisplayApp::Refresh() {
         motorController.RunForDuration(35);
         break;
       case Messages::OnChargingEvent:
-        motorController.RunForDuration(15);
+        if (batteryController.IsCharging()) {
+          // Open the battery app if on the clock screen
+          LoadNewScreen(Apps::BatteryInfo, DisplayApp::FullRefreshDirections::None);
+        } else if (!batteryController.IsCharging() && currentApp == Apps::BatteryInfo) {
+          // Close the battery app after being unplugged
+          LoadNewScreen(Apps::Clock, DisplayApp::FullRefreshDirections::None);
+        }
         break;
     }
   }
