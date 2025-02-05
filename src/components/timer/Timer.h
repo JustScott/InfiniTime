@@ -15,12 +15,21 @@ namespace Pinetime {
 
       void StopTimer();
 
-      std::chrono::milliseconds GetTimeRemaining();
+      std::chrono::milliseconds GetTimeRemaining() const;
 
-      bool IsRunning();
+      bool IsRunning() const;
 
-    private:
+      uint8_t timerOverflowIntervals = 0;
+
       TimerHandle_t timer;
+
+      const uint32_t maxTimerMS = 3'600'000; // 1 hour
+
+      void SetExpiredTime();
+
+      void ResetExpiredTime();
+    private:
+      TickType_t expired = 0;
     };
   }
 }
