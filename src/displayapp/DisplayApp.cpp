@@ -368,17 +368,25 @@ void DisplayApp::Refresh() {
         LoadNewScreen(Apps::NotificationsPreview, DisplayApp::FullRefreshDirections::Down);
         break;
       case Messages::TimerDone:
-        if (state != States::Running) {
-          PushMessageToSystemTask(System::Messages::GoToRunning);
-        }
-        if (currentApp == Apps::Timer) {
-          lv_disp_trig_activity(nullptr);
-          auto* timer = static_cast<Screens::Timer*>(currentScreen.get());
-          timer->Reset();
+        if (timer.timerOverflowIntervals > 0) {
+          timer.StopTimer();
+          timer.StartTimer(std::chrono::milliseconds(timer.timerOverflowIntervals * timer.maxTimerMS));
         } else {
-          LoadNewScreen(Apps::Timer, DisplayApp::FullRefreshDirections::Up);
+          if (state != States::Running) {
+            PushMessageToSystemTask(System::Messages::GoToRunning);
+          }
+          // Load timer app if not loaded
+          if (currentApp != Apps::Timer) {
+            LoadNewScreen(Apps::Timer, DisplayApp::FullRefreshDirections::Up);
+          }
+          // Once loaded, set the timer to ringing mode
+          if (currentApp == Apps::Timer) {
+            lv_disp_trig_activity(nullptr);
+            auto* timer = static_cast<Screens::Timer*>(currentScreen.get());
+            timer->SetTimerRinging();
+          }
+          motorController.StartRinging();
         }
-        motorController.RunForDuration(35);
         break;
       case Messages::AlarmTriggered:
         if (currentApp == Apps::Alarm) {
@@ -532,6 +540,7 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
                                                                  batteryController,
                                                                  bleController,
                                                                  alarmController,
+                                                                 timer,
                                                                  dateTimeController,
                                                                  filesystem,
                                                                  std::move(apps));
@@ -586,7 +595,8 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
                                                                motorController,
                                                                settingsController,
                                                                bleController,
-                                                               alarmController);
+                                                               alarmController,
+                                                               timer);
       break;
     case Apps::Settings:
       currentScreen = std::make_unique<Screens::Settings>(this, settingsController);
