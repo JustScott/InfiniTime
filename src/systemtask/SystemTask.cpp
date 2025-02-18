@@ -446,6 +446,7 @@ void SystemTask::UpdateMotion() {
 
   if (stepCounterMustBeReset) {
     motionSensor.ResetStepCounter();
+    motionController.ResetIgnoreSteps();
     stepCounterMustBeReset = false;
   }
 
