@@ -29,6 +29,7 @@ namespace Pinetime {
       Steps,
       Dice,
       Weather,
+      SleepTime,
       PassKey,
       QuickSettings,
       Settings,
