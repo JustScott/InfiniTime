@@ -19,8 +19,10 @@
 #pragma once
 
 #include "displayapp/apps/Apps.h"
+#include "components/settings/Settings.h"
 #include "displayapp/screens/Screen.h"
 #include "displayapp/Controllers.h"
+#include "displayapp/widgets/Counter.h"
 #include "Symbols.h"
 
 namespace Pinetime {
@@ -28,17 +30,46 @@ namespace Pinetime {
     namespace Screens {
       class SleepTime : public Screen {
       public:
-        SleepTime();
+        SleepTime(Controllers::Settings::ClockType clockType);
         ~SleepTime() override;
+
+        void Refresh() override;
+
+        void OnButtonEvent(lv_obj_t* obj, lv_event_t event);
+
+      private:
+        void ShowEndTimeInfo();
+        void HideEndTimeInfo();
+
+        enum class TimeOfDay : uint8_t { AM, PM };
+        TimeOfDay timeOfDay = TimeOfDay::AM;
+
+        enum class TimeType : uint8_t { Alarm, Timer };
+        TimeType timeType = TimeType::Alarm;
+
+        lv_obj_t* colonLabel;
+        lv_obj_t* buttonTimeOfDayToggle;
+        lv_obj_t* labelTimeOfDayToggle;
+        lv_obj_t* buttonTimeInfo;
+        lv_obj_t* labelTimeInfo;
+        lv_obj_t* buttonAlarmTimerToggle;
+        lv_obj_t* labelAlarmTimerToggle;
+        lv_obj_t* buttonSwitchSleepOnOff;
+        lv_obj_t* buttonExitEndTimeInfo;
+        lv_obj_t* labelEndTimeInfo;
+
+        Widgets::Counter hourCounter = Widgets::Counter(0, 23, jetbrains_mono_76);
+        Widgets::Counter minuteCounter = Widgets::Counter(0, 59, jetbrains_mono_76);
       };
     }
-    
+
     template <>
     struct AppTraits<Apps::SleepTime> {
       static constexpr Apps app = Apps::SleepTime;
       static constexpr const char* icon = Screens::Symbols::crescentMoon;
+
       static Screens::Screen* Create(AppControllers& controllers) {
-        return new Screens::SleepTime();
+        return new Screens::SleepTime(controllers.settingsController.GetClockType());
       }
     };
   }
