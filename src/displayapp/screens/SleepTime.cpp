@@ -26,6 +26,8 @@
 #include "displayapp/InfiniTimeTheme.h"
 #include "displayapp/screens/Screen.h"
 #include "components/settings/Settings.h"
+// TODO: move to sleepController
+#include <chrono>
 
 #include <nrf_log.h>
 
@@ -238,6 +240,10 @@ void SleepTime::ToggleSleepMode() {
     }
     // TODO: Reposition on off switch to center of screen
     lv_obj_set_pos(buttonSwitchSleepOnOff, 75, 150);
+
+    //    if (timeType == TimeType::Alarm) {
+    //      SetAlarm(static_cast<uint8_t>(hourCounter.GetValue()), static_cast<uint8_t>(minuteCounter.GetValue()), timeOfDay);
+    //    }
   } else {
     NRF_LOG_INFO("Turning Off");
     lv_switch_off(buttonSwitchSleepOnOff, LV_ANIM_OFF);
@@ -297,3 +303,37 @@ void SleepTime::ApplyExternalWidgetFactors() {
     hourCounter.SetMax(12);
   }
 }
+
+// void SleepTime::SetAlarm(uint8_t hours, uint8_t minutes, TimeOfDay currentTimeOfDay) {
+//   if (hours < 13 && currentTimeOfDay == TimeOfDay::PM) {
+//     if (hours == 12) {
+//       hours = 0;
+//     } else {
+//       hours += 12;
+//     }
+//   }
+//
+//   auto now = dateTimeController.CurrentDateTime();
+//
+//   // Get today's midnight
+//   auto today = std::chrono::floor<std::chrono::days>(now);
+//
+//   // Construct the alarm time for today
+//   auto alarmTime = today + std::chrono::hours(hours) + std::chrono::minutes(minutes);
+//
+//   // Check if time already passed, if so, add 24 hours
+//   if (alarmTime <= now) {
+//     alarmTime += std::chrono::hours(24);
+//   }
+//
+//   // Subtract the current time from the alarm time and return seconds
+//   auto secondsUntilAlarm = std::chrono::duration_cast<std::chrono::seconds>(alarmTime - now).count();
+//
+//   NRF_LOG_INFO("Seconds To Alarm: %d", static_cast<int>(secondsUntilAlarm));
+// }
+
+// TODO: move to sleepController
+// dateTimeController.CurrentDateTime();
+// uint32_t SleepTime::SecondsToAlarm() const {
+//  return std::chrono::duration_cast<std::chrono::seconds>(alarmTime - dateTimeController.CurrentDateTime()).count();
+//}

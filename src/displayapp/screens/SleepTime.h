@@ -51,6 +51,8 @@ namespace Pinetime {
         enum class TimeType : uint8_t { Alarm, Timer };
         TimeType timeType = TimeType::Alarm;
 
+        //        void SetAlarm(uint8_t hours, uint8_t minutes, TimeOfDay currentTimeOfDay);
+
         lv_obj_t* colonLabel;
         lv_obj_t* buttonTimeOfDayToggle;
         lv_obj_t* labelTimeOfDayToggle;
