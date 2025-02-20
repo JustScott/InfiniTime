@@ -16,6 +16,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// TODO: Add function to show the live timer with the timer
+//       above it or the alarm time above it
+// TODO: Open this app when alarm goes off, and if alarm or
+//       timer is ringing, then show a snooze button. Also apply
+//       "Taps To Stop" from settings to the shut off button
+
 #include "displayapp/screens/SleepTime.h"
 #include "displayapp/InfiniTimeTheme.h"
 #include "displayapp/screens/Screen.h"
@@ -32,18 +38,17 @@ static void buttonEventHandler(lv_obj_t* obj, lv_event_t event) {
 
 using namespace Pinetime::Applications::Screens;
 
-SleepTime::SleepTime(Controllers::Settings::ClockType clockType) {
+SleepTime::SleepTime(Controllers::Settings::ClockType clockType) : clockType(clockType) {
   static constexpr lv_color_t bgColor = Colors::bgAlt;
 
-  // TODO: Check settingsController, and do hourCounter.SetMax(12 or 23)
   // TODO: Load counter values from sleepController (from file)
   hourCounter.Create();
   lv_obj_align(hourCounter.GetObject(), nullptr, LV_ALIGN_IN_TOP_LEFT, 0, 0);
-  hourCounter.SetValue(10);
+  hourCounter.SetValue(0);
 
   minuteCounter.Create();
   lv_obj_align(minuteCounter.GetObject(), nullptr, LV_ALIGN_IN_TOP_RIGHT, 0, 0);
-  minuteCounter.SetValue(10);
+  minuteCounter.SetValue(0);
 
   colonLabel = lv_label_create(lv_scr_act(), nullptr);
   lv_obj_set_style_local_text_font(colonLabel, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &jetbrains_mono_42);
@@ -60,14 +65,6 @@ SleepTime::SleepTime(Controllers::Settings::ClockType clockType) {
 
   labelTimeOfDayToggle = lv_label_create(buttonTimeOfDayToggle, nullptr);
   lv_obj_set_style_local_bg_color(buttonTimeOfDayToggle, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, bgColor);
-
-  if (clockType == Controllers::Settings::ClockType::H12) {
-    if (timeOfDay == TimeOfDay::AM) {
-      lv_label_set_text_static(labelTimeOfDayToggle, "AM");
-    } else {
-      lv_label_set_text_static(labelTimeOfDayToggle, "PM");
-    }
-  }
 
   buttonTimeInfo = lv_btn_create(lv_scr_act(), nullptr);
   buttonTimeInfo->user_data = this;
@@ -108,6 +105,23 @@ SleepTime::SleepTime(Controllers::Settings::ClockType clockType) {
   //       animation on open
   lv_switch_off(buttonSwitchSleepOnOff, LV_ANIM_OFF);
 
+  // On when in alarm and 12H mode and sleeps on
+  labelActiveTimerAMPM = lv_label_create(lv_scr_act(), nullptr);
+  lv_obj_align(labelActiveTimerAMPM, lv_scr_act(), LV_ALIGN_IN_RIGHT_MID, 10, 20);
+
+  if (clockType == Controllers::Settings::ClockType::H12 && timeType == TimeType::Alarm) {
+    lv_label_set_text_static(labelActiveTimerAMPM, "PM");
+    if (timeOfDay == TimeOfDay::AM) {
+      lv_label_set_text_static(labelActiveTimerAMPM, "AM");
+    }
+  }
+
+  // Doesn't matter right now since gets manually turned off above.
+  // if sleep is off, hide
+  if (!lv_switch_get_state(buttonSwitchSleepOnOff)) {
+    lv_obj_set_hidden(labelActiveTimerAMPM, true);
+  }
+
   // Has to be at end of widgets to overlay over the rest
   buttonExitEndTimeInfo = lv_btn_create(lv_scr_act(), nullptr);
   buttonExitEndTimeInfo->user_data = this;
@@ -120,6 +134,10 @@ SleepTime::SleepTime(Controllers::Settings::ClockType clockType) {
   labelEndTimeInfo = lv_label_create(buttonExitEndTimeInfo, nullptr);
 
   HideEndTimeInfo();
+  // TODO: If sleep is enabled when loaded from settings, update the timer
+  //       and all of that, then just run `ToggleSleepMode()` to set up UI
+
+  ApplyExternalWidgetFactors();
 }
 
 SleepTime::~SleepTime() {
@@ -153,27 +171,20 @@ void SleepTime::OnButtonEvent(lv_obj_t* obj, lv_event_t event) {
     } else if (obj == buttonExitEndTimeInfo) {
       HideEndTimeInfo();
     } else if (obj == buttonAlarmTimerToggle) {
-      NRF_LOG_INFO("Clicked Toggle");
-
       if (timeType == TimeType::Alarm) {
-        NRF_LOG_INFO("Switching to Timer");
         timeType = TimeType::Timer;
-        NRF_LOG_INFO("Variable switched");
         lv_label_set_text_static(labelAlarmTimerToggle, "Timer");
-        NRF_LOG_INFO("Label Switched");
+        lv_obj_set_hidden(buttonTimeOfDayToggle, true);
+        lv_obj_set_hidden(labelTimeOfDayToggle, true);
       } else {
-        NRF_LOG_INFO("Switching to Alarm");
         timeType = TimeType::Alarm;
         lv_label_set_text_static(labelAlarmTimerToggle, "Alarm");
+        lv_obj_set_hidden(buttonTimeOfDayToggle, false);
+        lv_obj_set_hidden(labelTimeOfDayToggle, false);
       }
+      ApplyExternalWidgetFactors();
     } else if (obj == buttonSwitchSleepOnOff) {
-      // TODO: Call a function here that hides widgets other can counters,
-      //       colon, and switch, and turns on the relevant top icon
-      if (lv_switch_get_state(buttonSwitchSleepOnOff)) {
-        lv_switch_off(buttonSwitchSleepOnOff, LV_ANIM_OFF);
-      } else {
-        lv_switch_on(buttonSwitchSleepOnOff, LV_ANIM_OFF);
-      }
+      ToggleSleepMode();
     }
   }
 }
@@ -186,7 +197,11 @@ void SleepTime::ShowEndTimeInfo() {
   // TODO: Only show needed time remaining, ex: "25s" instead of "0h 0m 25s"
   //       and make it a live countdown... might need to make this line its
   //       own function and attach task to it that only runs if not nullptr
-  lv_label_set_text_fmt(labelEndTimeInfo, "%s 11:32 AM\n\n%s 1h 32m", Screens::Symbols::stopWatch, Screens::Symbols::hourGlass);
+  if (timeType == TimeType::Alarm) {
+    lv_label_set_text_fmt(labelEndTimeInfo, "%s 1h 32m", Screens::Symbols::hourGlass);
+  } else {
+    lv_label_set_text_fmt(labelEndTimeInfo, "%s 11:32 AM", Screens::Symbols::stopWatch);
+  }
 
   lv_obj_set_hidden(labelEndTimeInfo, false);
   lv_obj_set_hidden(buttonExitEndTimeInfo, false);
@@ -197,7 +212,88 @@ void SleepTime::HideEndTimeInfo() {
   lv_obj_set_hidden(buttonExitEndTimeInfo, true);
 }
 
-// TODO: Add function to hide widgets when alarm start and
-//       show the widgets when stopped
-// TODO: Add function to show the live timer with the timer
-//       above it or the alarm time above it
+void SleepTime::ToggleSleepMode() {
+  if (lv_switch_get_state(buttonSwitchSleepOnOff)) {
+    NRF_LOG_INFO("Turning On");
+    lv_switch_on(buttonSwitchSleepOnOff, LV_ANIM_OFF);
+    lv_obj_set_hidden(buttonTimeInfo, true);
+    lv_obj_set_hidden(labelTimeInfo, true);
+    lv_obj_set_hidden(buttonExitEndTimeInfo, true);
+    lv_obj_set_hidden(labelEndTimeInfo, true);
+    lv_obj_set_hidden(buttonTimeOfDayToggle, true);
+    lv_obj_set_hidden(labelTimeOfDayToggle, true);
+    lv_obj_set_hidden(buttonAlarmTimerToggle, true);
+    lv_obj_set_hidden(labelAlarmTimerToggle, true);
+    // timeofday button and label handled by ApplyExternalWidgetFactors
+
+    hourCounter.HideControls();
+    minuteCounter.HideControls();
+
+    if (clockType == Controllers::Settings::ClockType::H12 && timeType == TimeType::Alarm) {
+      lv_label_set_text_static(labelActiveTimerAMPM, "PM");
+      if (timeOfDay == TimeOfDay::AM) {
+        lv_label_set_text_static(labelActiveTimerAMPM, "AM");
+      }
+      lv_obj_set_hidden(labelActiveTimerAMPM, false);
+    }
+    // TODO: Reposition on off switch to center of screen
+    lv_obj_set_pos(buttonSwitchSleepOnOff, 75, 150);
+  } else {
+    NRF_LOG_INFO("Turning Off");
+    lv_switch_off(buttonSwitchSleepOnOff, LV_ANIM_OFF);
+    lv_obj_set_hidden(buttonTimeInfo, false);
+    lv_obj_set_hidden(labelTimeInfo, false);
+    lv_obj_set_hidden(buttonTimeOfDayToggle, false);
+    lv_obj_set_hidden(labelTimeOfDayToggle, false);
+    lv_obj_set_hidden(buttonAlarmTimerToggle, false);
+    lv_obj_set_hidden(labelAlarmTimerToggle, false);
+
+    lv_obj_set_hidden(buttonTimeOfDayToggle, false);
+    lv_obj_set_hidden(labelTimeOfDayToggle, false);
+    hourCounter.ShowControls();
+    minuteCounter.ShowControls();
+
+    lv_obj_set_hidden(labelActiveTimerAMPM, true);
+
+    lv_obj_align(buttonSwitchSleepOnOff, lv_scr_act(), LV_ALIGN_IN_BOTTOM_LEFT, 4, -4);
+  }
+  ApplyExternalWidgetFactors();
+}
+
+// Need this to share logic to avoid, for example, 24H mode removing
+// AM/PM toggle, and toggling to timer turning it back on
+void SleepTime::ApplyExternalWidgetFactors() {
+  // Call below this take precedence over all other logic
+
+  // Reset
+  if (clockType == Controllers::Settings::ClockType::H12) {
+    lv_obj_set_hidden(buttonTimeOfDayToggle, false);
+    lv_obj_set_hidden(labelTimeOfDayToggle, false);
+
+    hourCounter.SetMax(12);
+
+    if (timeOfDay == TimeOfDay::AM) {
+      lv_label_set_text_static(labelTimeOfDayToggle, "AM");
+    } else {
+      lv_label_set_text_static(labelTimeOfDayToggle, "PM");
+    }
+  } else {
+    lv_obj_set_hidden(buttonTimeOfDayToggle, true);
+    lv_obj_set_hidden(labelTimeOfDayToggle, true);
+
+    hourCounter.SetMax(23);
+  }
+
+  if (lv_switch_get_state(buttonSwitchSleepOnOff)) {
+    lv_obj_set_hidden(buttonTimeOfDayToggle, true);
+    lv_obj_set_hidden(labelTimeOfDayToggle, true);
+  }
+
+  if (clockType == Controllers::Settings::ClockType::H24) {
+    lv_obj_set_hidden(labelActiveTimerAMPM, true);
+  }
+
+  if (timeType == TimeType::Timer) {
+    hourCounter.SetMax(12);
+  }
+}

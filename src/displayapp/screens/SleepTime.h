@@ -38,8 +38,12 @@ namespace Pinetime {
         void OnButtonEvent(lv_obj_t* obj, lv_event_t event);
 
       private:
+        Controllers::Settings::ClockType clockType;
+
         void ShowEndTimeInfo();
         void HideEndTimeInfo();
+        void ApplyExternalWidgetFactors();
+        void ToggleSleepMode();
 
         enum class TimeOfDay : uint8_t { AM, PM };
         TimeOfDay timeOfDay = TimeOfDay::AM;
@@ -52,11 +56,12 @@ namespace Pinetime {
         lv_obj_t* labelTimeOfDayToggle;
         lv_obj_t* buttonTimeInfo;
         lv_obj_t* labelTimeInfo;
+        lv_obj_t* buttonExitEndTimeInfo;
+        lv_obj_t* labelEndTimeInfo;
         lv_obj_t* buttonAlarmTimerToggle;
         lv_obj_t* labelAlarmTimerToggle;
         lv_obj_t* buttonSwitchSleepOnOff;
-        lv_obj_t* buttonExitEndTimeInfo;
-        lv_obj_t* labelEndTimeInfo;
+        lv_obj_t* labelActiveTimerAMPM;
 
         Widgets::Counter hourCounter = Widgets::Counter(0, 23, jetbrains_mono_76);
         Widgets::Counter minuteCounter = Widgets::Counter(0, 59, jetbrains_mono_76);
