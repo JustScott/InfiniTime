@@ -24,10 +24,9 @@ All releases of InfiniTime are available on the [release page of the GitHub repo
 
 To update the firmware, you need to download the DFU of the firmware version that you'd like to install, for example `pinetime-mcuboot-app-dfu-1.6.0.zip`, and flash it with your companion app.
 
-We have prepared instructions for flashing InfiniTime with Gadgetbridge and NRFConnect.
+We have prepared instructions for flashing InfiniTime with Gadgetbridge.
 
 - [Updating with Gadgetbridge](/doc/gettingStarted/ota-gadgetbridge.md)
-- [Updating with NRFConnect](/doc/gettingStarted/ota-nrfconnect.md)
 
 ## Firmware validation
 
@@ -48,26 +47,3 @@ Since those resources are not part of the firmware, they need to be flashed and 
 
 Resources are packaged into a single .zip file named `infinitime-resources-x.y.z.zip` (where `x`, `y` and `z` are the version numbers of InfiniTime). 
 You can use the companion app of your choice to flash the resources.
-
-**Note: at the time of writing this page, [Amazfish](https://github.com/piggz/harbour-amazfish) and [ITD](https://gitea.arsenm.dev/Arsen6331/itd) have already integrated this functionality. Other companion apps will hopefully implement it soon!*
-
-## Amazfish
-Use the `Download file` functionality of Amazfish. 
-
-![Update resources with Amazfish - Download file](amazfish-external-resources-1.png)
-
-Amazfish automatically detects the file type (firmware or resources) and apply the corresponding flash procedure when you hit the button **Send file**.
-
-![Update resources with Amazfish](amazfish-external-resources-2.png)
-
-## ITD
-
-Run `itctl` with the `res` command:
-
-```
-itctl res load infinitime-resources-1.10.0.zip
-```
-
-Example:
-
-![Update resources using itctl](itd-external-resources.png)
