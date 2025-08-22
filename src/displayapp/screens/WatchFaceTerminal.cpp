@@ -98,16 +98,12 @@ void WatchFaceTerminal::Refresh() {
     uint8_t second = dateTimeController.Seconds();
 
     if (settingsController.GetClockType() == Controllers::Settings::ClockType::H12) {
-      char ampmChar[3] = "AM";
       if (hour == 0) {
         hour = 12;
-      } else if (hour == 12) {
-        ampmChar[0] = 'P';
       } else if (hour > 12) {
         hour = hour - 12;
-        ampmChar[0] = 'P';
       }
-      lv_label_set_text_fmt(label_time, "#fffff [TIME]# #11cc55 %02d:%02d:%02d %s#", hour, minute, second, ampmChar);
+      lv_label_set_text_fmt(label_time, "#fffff [TIME]# #11cc55 %02d:%02d:%02d#", hour, minute, second);
     } else {
       lv_label_set_text_fmt(label_time, "#ffffff [TIME]# #11cc55 %02d:%02d:%02d#", hour, minute, second);
     }

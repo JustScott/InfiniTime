@@ -82,7 +82,6 @@ namespace Pinetime {
         lv_obj_t* timeDD1;
         lv_obj_t* timeDD2;
         lv_obj_t* timeDD3;
-        lv_obj_t* timeAMPM;
         lv_obj_t* dateDayOfWeek;
         lv_obj_t* dateDay;
         lv_obj_t* dateMonth;

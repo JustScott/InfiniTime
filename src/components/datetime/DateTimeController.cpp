@@ -165,6 +165,25 @@ std::string DateTime::FormattedTime() {
   char buff[9];
   if (settingsController.GetClockType() == ClockType::H12) {
     uint8_t hour12;
+    if (hour < 12) {
+      hour12 = (hour == 0) ? 12 : hour;
+    } else {
+      hour12 = (hour == 12) ? 12 : hour - 12;
+    }
+    snprintf(buff, sizeof(buff), "%i:%02i", hour12, minute);
+  } else {
+    snprintf(buff, sizeof(buff), "%02i:%02i", hour, minute);
+  }
+  return std::string(buff);
+}
+
+std::string DateTime::FormattedTimeAMPM() {
+  auto hour = Hours();
+  auto minute = Minutes();
+  // Return time as a string in 12- or 24-hour format
+  char buff[9];
+  if (settingsController.GetClockType() == ClockType::H12) {
+    uint8_t hour12;
     const char* amPmStr;
     if (hour < 12) {
       hour12 = (hour == 0) ? 12 : hour;

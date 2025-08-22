@@ -137,6 +137,7 @@ namespace Pinetime {
       void Register(System::SystemTask* systemTask);
       void SetCurrentTime(std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds> t);
       std::string FormattedTime();
+      std::string FormattedTimeAMPM();
 
     private:
       void UpdateTime(uint32_t systickCounter, bool forceUpdate);
