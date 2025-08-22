@@ -7,14 +7,12 @@ using namespace Pinetime::Applications::Widgets;
 StatusIcons::StatusIcons(const Controllers::Battery& batteryController,
                          const Controllers::Ble& bleController,
                          const Controllers::AlarmController& alarmController,
-                         const Controllers::Timer& timer,
-                         const Controllers::Settings& settingsController)
+                         const Controllers::Timer& timer)
   : batteryIcon(true),
     batteryController {batteryController},
     bleController {bleController},
     alarmController {alarmController},
-    timer {timer},
-    settingsController {settingsController} {
+    timer {timer} {
 }
 
 void StatusIcons::Create() {
@@ -108,21 +106,14 @@ void StatusIcons::Update() {
     uint8_t timerMinutes = (secondsRemaining.count() % 3600) / 60;
     uint8_t timerSeconds = secondsRemaining.count() % 60;
     if (timerHours > 0) {
-      maxIcons = 1;
+      maxIcons = 2;
       lv_label_set_text_fmt(timeRemaining, "%02d:%02d:%02d", timerHours, timerMinutes, timerSeconds);
     } else if (timerMinutes > 0) {
-      maxIcons = 2;
+      maxIcons = 3;
       lv_label_set_text_fmt(timeRemaining, "%02d:%02d", timerMinutes, timerSeconds);
     } else {
-      maxIcons = 4;
+      maxIcons = 5;
       lv_label_set_text_fmt(timeRemaining, "%02d", timerSeconds);
-    }
-
-    if (settingsController.GetClockType() == Controllers::Settings::ClockType::H24) {
-      maxIcons++;
-      if (timerMinutes > 0 && timerHours < 1) {
-        maxIcons++;
-      }
     }
 
     if (activeIconCounter > maxIcons) {

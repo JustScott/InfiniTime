@@ -36,7 +36,7 @@ Tile::Tile(uint8_t screenID,
   : app {app},
     dateTimeController {dateTimeController},
     pageIndicator(screenID, numScreens),
-    statusIcons(batteryController, bleController, alarmController, timer, settingsController) {
+    statusIcons(batteryController, bleController, alarmController, timer) {
 
   settingsController.SetAppMenu(screenID);
 
