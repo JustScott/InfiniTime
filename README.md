@@ -14,7 +14,7 @@
 
 # InfiniTime
 
-*A forked alternative to the [InfiniTime](https://github.com/InfiniTimeOrg/InfiniTime) firmware for the [PineTime smartwatch](https://pine64.org/devices/pinetime/) with more useful default apps, quicker updates, new features, and expanded customization*
+*A forked alternative to the [InfiniTime](https://github.com/InfiniTimeOrg/InfiniTime) firmware for the [PineTime smartwatch](https://pine64.org/devices/pinetime/) with more useful default apps, new features, and expanded customization*
 
 <br>
 
